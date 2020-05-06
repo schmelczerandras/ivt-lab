@@ -74,6 +74,20 @@ public class GT4500Test {
   }
 
   @Test
+  public void fireTorpedo_All_Half_Success_B(){
+    // Arrange
+    this.ship = new GT4500(this.emptyMockA, this.fullMockB);
+
+    // Act
+    boolean result = ship.fireTorpedo(FiringMode.ALL);
+
+    // Assert
+    assertEquals(true, result);
+    verify(this.emptyMockA, times(1)).fire(1);
+    verify(this.fullMockB, times(1)).fire(1);
+  }
+
+  @Test
   public void fireTorpedo_All_No_Success(){
     // Arrange
     this.ship = new GT4500(this.emptyMockA, this.emptyMockB);
@@ -119,6 +133,21 @@ public class GT4500Test {
   }
 
   @Test
+  public void fireTorpedo_Single_Half_Success_B(){
+    // Arrange
+    this.ship = new GT4500(this.emptyMockA, this.fullMockB);
+
+    // Act
+    boolean firstResult = ship.fireTorpedo(FiringMode.SINGLE);
+    boolean secondResult = ship.fireTorpedo(FiringMode.SINGLE);
+
+    // Assert
+    assertEquals(true, firstResult);
+    assertEquals(true, secondResult);
+    verify(this.fullMockB, times(2)).fire(1);
+  }
+
+  @Test
   public void fireTorpedo_Single_No_Success(){
     // Arrange
     this.ship = new GT4500(this.emptyMockA, this.emptyMockB);
@@ -128,5 +157,24 @@ public class GT4500Test {
 
     // Assert
     assertEquals(false, result);
+  }
+
+  @Test
+  public void fireTorpedo_torpedoStoreGetsEmpty(){
+    // Arrange
+    this.ship = new GT4500(this.fullMockA, this.emptyMockB);
+
+    // Act
+    boolean firstResult = ship.fireTorpedo(FiringMode.SINGLE);
+    // Arrange a tiny bit
+    when(fullMockA.isEmpty()).thenReturn(true);
+    // Act again
+    boolean secondResult = ship.fireTorpedo(FiringMode.SINGLE);
+
+
+    // Assert
+    assertEquals(true, firstResult);
+    assertEquals(false, secondResult);
+    verify(this.fullMockA, times(1)).fire(1);
   }
 }
